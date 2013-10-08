@@ -30,3 +30,9 @@ To-do
 - [ ] Define a protocol for messages
 - [ ] Start messing around with image transfer/canvas trickery
 - [x] task list what
+
+- [ ] a task list item
+- [ ] list syntax required
+- [ ] normal **formatting**, @mentions, #1234 refs
+- [ ] incomplete
+- [x] completed
