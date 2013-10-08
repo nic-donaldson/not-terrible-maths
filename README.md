@@ -21,3 +21,11 @@ Then try:
     ./run_server.sh <port>
    
 At the moment port should be 9001 as that is the hardcoded value in the client. (sloppy, I know)
+
+To-do
+=====
+
+- [] Figure out why the server throws an error occasionally on connects/disconnects
+- [] Prettify the client
+- [] Define a protocol for messages
+- [] Start messing around with image transfer/canvas trickery
