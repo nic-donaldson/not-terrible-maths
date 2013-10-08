@@ -17,11 +17,9 @@ def web_socket_transfer_data(request):
     global prior
     global pairs
 
-    print("1!-----------")
     if prior == None:
         request.ws_stream.send_message("2: Connected to another!")
 
-    print("2-------------")
     while True:
         line = request.ws_stream.receive_message()
         if line =="debug":
