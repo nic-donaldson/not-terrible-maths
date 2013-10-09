@@ -12,11 +12,11 @@ connection.onerror = function(error) {
 
 connection.onmessage = function (e) {
     console.log('Server: ' + e.data);
-    if (e.data.startsWith("maths:")) {
-        addMsg("Other: " + e.data.substring(6,e.data.length));
+    if (e.data.indexOf("maths:") === 0) {
+        addMsg("Them: " + e.data.substring(6,e.data.length));
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,"messagetable"]);
     } else {
-        addMsg("Other: " + e.data);
+        addMsg("Them: " + e.data);
     }
 }
 
@@ -28,6 +28,11 @@ $(document).ready(function() {
         msg = $("#inputfield").val();
         $("#inputfield").val('');
         connection.send(msg);
+        addMsg("You: " + msg);
+
+        if (msg.indexOf("maths:") === 0) {
+            MathJax.Hub.Queue(["Typeset",MathJax.Hub,"messagetable"]);
+        }
         
     });
 
