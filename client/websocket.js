@@ -22,11 +22,19 @@ connection.onmessage = function (e) {
 
 
 $(document).ready(function() {
+
     $("#sendbutton").click(function() {
         console.log("Sending message");
         msg = $("#inputfield").val();
         $("#inputfield").val('');
         connection.send(msg);
+        
+    });
+
+    $("#inputfield").keypress(function(event) {
+        if (event.which == 13) {
+            $("#sendbutton").click();
+        }
     });
 
 });
