@@ -23,22 +23,19 @@ connection.onmessage = function (e) {
 
 $(document).ready(function() {
 
-    $("#sendbutton").click(function() {
-        console.log("Sending message");
-        msg = $("#inputfield").val();
-        $("#inputfield").val('');
-        connection.send(msg);
-        addMsg("You: " + msg);
-
-        if (msg.indexOf("maths:") === 0) {
-            MathJax.Hub.Queue(["Typeset",MathJax.Hub,"messagetable"]);
-        }
-        
-    });
-
     $("#inputfield").keypress(function(event) {
-        if (event.which == 13) {
-            $("#sendbutton").click();
+        if (event.which == 13 && !event.shiftKey) {
+            event.preventDefault();
+
+            console.log("Sending message");
+            msg = $("#inputfield").val();
+            $("#inputfield").val('');
+            connection.send(msg);
+            addMsg("You: " + msg);
+
+            if (msg.indexOf("maths:") === 0) {
+                MathJax.Hub.Queue(["Typeset",MathJax.Hub,"messagetable"]);
+            }
         }
     });
 
