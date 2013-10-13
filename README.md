@@ -33,7 +33,7 @@ or
 
     python -m SimpleHTTPServer
 
-depending on how your system is set up.
+from the client directory, depending on how your system is set up.
 
 To-do
 =====
