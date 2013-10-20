@@ -38,6 +38,7 @@ from the client directory, depending on how your system is set up.
 To-do
 =====
 
+* Port the server to Tornado (both websockets and regular)
 * Figure out why the server throws an error occasionally on connects/disconnects
 * Prettify the client
 * Define a protocol for messages
