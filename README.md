@@ -6,7 +6,7 @@ Little side project to try and stop me from crying when I want to communicate ma
 Installation
 ============
 
-This project (currently) requires tornado or mod_pywebsocket (no longer supported, check out older versions).
+This project requires tornado or mod_pywebsocket (no longer supported, check out older versions).
 
     pip install tornado
     
