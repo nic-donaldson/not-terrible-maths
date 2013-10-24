@@ -1,4 +1,10 @@
-var connection = new WebSocket('ws://' + document.location.hostname + ':9001/connect', []);
+var connection;
+
+if (document.location.hostname != "") {
+    connection = new WebSocket('ws://' + document.location.hostname + ':9001/connect', []);
+} else {
+    connection = new WebSocket('ws://localhost:9001/connect', []);
+}
 
 connection.onopen = function () {
     console.log("Connected to server");
