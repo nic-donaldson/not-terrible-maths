@@ -1,3 +1,4 @@
+import os
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
@@ -57,9 +58,19 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
 			if self == prior:
 				prior = None
 
+class RootHandler(tornado.web.RequestHandler):
+	def get(self):
+		self.redirect("/static/websockets.html")
+
+
+settings = {
+	"static_path": os.path.join(os.path.dirname(__file__), "../client")
+}
+
 application = tornado.web.Application([
 	(r"/connect", EchoWebSocket),
-])
+	(r"/", RootHandler),
+], **settings)
 
 if __name__ == "__main__":
 	application.listen(9001)

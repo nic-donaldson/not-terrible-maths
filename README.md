@@ -17,22 +17,11 @@ Running
 
     python server/tornado_server.py
 
-Will start a server on port 9001.
-
-The latest version expects the static files to be served from a web server now, as it tries to connect to the websockets server on the same domain. You can use Python's built in web server module to do this:
-
-    python2 -m SimpleHTTPServer
-
-or
-
-    python -m SimpleHTTPServer
-
-from the client directory, depending on how your system is set up.
+Will start a server on port 9001. Then head to localhost:9001 in your browser and hopefully it will work!
 
 To-do
 =====
 
-* Add web serving stuff to tornado server as well
 * Prettify the client
 * Define a protocol for messages
 * Start messing around with image transfer/canvas trickery
@@ -40,3 +29,4 @@ To-do
 * Add link autorecognition in chat
 * Implement image sharing
 * Add description of project to readme!
+* Make static file serving less lame
