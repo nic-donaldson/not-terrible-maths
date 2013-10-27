@@ -25,7 +25,6 @@ To-do
 * Prettify the client
 * Define a protocol for messages
 * Start messing around with image transfer/canvas trickery
-* Set mathjax to only render new messages
 * Add link autorecognition in chat
 * Implement image sharing
 * Add description of project to readme!

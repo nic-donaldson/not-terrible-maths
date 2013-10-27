@@ -20,7 +20,7 @@ connection.onmessage = function (e) {
     console.log('Server: ' + e.data);
     if (e.data.indexOf("maths:") === 0) {
         addMsg("Them: " + e.data.substring(6,e.data.length));
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub,"messagetable"]);
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub,$("#messagetable tr td:last")[0]]);
     } else {
         addMsg("Them: " + e.data);
     }
@@ -40,7 +40,7 @@ $(document).ready(function() {
             addMsg("You: " + msg);
 
             if (msg.indexOf("maths:") === 0) {
-                MathJax.Hub.Queue(["Typeset",MathJax.Hub,"messagetable"]);
+                MathJax.Hub.Queue(["Typeset",MathJax.Hub,$("#messagetable tr td:last")[0]]);
             }
         }
     });
