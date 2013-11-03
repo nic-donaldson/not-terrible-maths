@@ -22,6 +22,7 @@ Will start a server on port 9001. Then head to localhost:9001 in your browser an
 To-do
 =====
 
+* Make autoscroll work with maths
 * Prettify the client
 * Define a protocol for messages
 * Start messing around with image transfer/canvas trickery

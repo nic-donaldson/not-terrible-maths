@@ -1,5 +1,6 @@
 var connection;
 var messagecontainer;
+var maths_prefix = "m:";
 
 if (document.location.hostname != "") {
     connection = new WebSocket('ws://' + document.location.hostname + ':9001/connect', []);
@@ -19,7 +20,7 @@ connection.onerror = function(error) {
 
 connection.onmessage = function (e) {
     console.log('Server: ' + e.data);
-    if (e.data.indexOf("maths:") === 0) {
+    if (e.data.indexOf(maths_prefix) === 0) {
         addMsg("Them: " + e.data.substring(6,e.data.length));
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,$("#messagebox div:last")[0]]);
     } else {
@@ -40,7 +41,7 @@ $(document).ready(function() {
             connection.send(msg);
             addMsg("You: " + msg);
 
-            if (msg.indexOf("maths:") === 0) {
+            if (msg.indexOf(maths_prefix) === 0) {
                 MathJax.Hub.Queue(["Typeset",MathJax.Hub,$("#messagebox div:last")[0]]);
             }
         }
