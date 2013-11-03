@@ -1,4 +1,5 @@
 var connection;
+var messagecontainer;
 
 if (document.location.hostname != "") {
     connection = new WebSocket('ws://' + document.location.hostname + ':9001/connect', []);
@@ -20,7 +21,7 @@ connection.onmessage = function (e) {
     console.log('Server: ' + e.data);
     if (e.data.indexOf("maths:") === 0) {
         addMsg("Them: " + e.data.substring(6,e.data.length));
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub,$("#messagetable tr td:last")[0]]);
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub,$("#messagebox div:last")[0]]);
     } else {
         addMsg("Them: " + e.data);
     }
@@ -40,14 +41,23 @@ $(document).ready(function() {
             addMsg("You: " + msg);
 
             if (msg.indexOf("maths:") === 0) {
-                MathJax.Hub.Queue(["Typeset",MathJax.Hub,$("#messagetable tr td:last")[0]]);
+                MathJax.Hub.Queue(["Typeset",MathJax.Hub,$("#messagebox div:last")[0]]);
             }
         }
     });
+
+    messagecontainer = document.getElementById("messagecontainer");
 
 });
 
 // Delicious!
 function addMsg(message) {
-    $("#messagetable").append('<tr><td>'+message+'</td></tr>');
+    // If message container already at bottom or not overflowing, set to bottom
+    //-- at bottom or not overflowing => scrollheight - scrolltop == height
+    if(messagecontainer.scrollHeight - messagecontainer.scrollTop == $(messagecontainer).height()) {
+        $("#messagebox").append('<div class="message">' + message + '</div>');
+        messagecontainer.scrollTop = messagecontainer.scrollHeight - $(messagecontainer).height();
+    } else {
+        $("#messagebox").append('<div class="message">' + message + '</div>');
+    }
 }
