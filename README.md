@@ -18,7 +18,7 @@ Running
 You will need to write a config file before using the server. A sample config file is included in sample_config.ini . Save the new config file to config.ini . Then:
 
 
-    python server/tornado_server.py
+    python3.3 server/tornado_server.py
 
 Will start a server on port 9001. Then head to localhost:9001 in your browser and hopefully it will work!
 
