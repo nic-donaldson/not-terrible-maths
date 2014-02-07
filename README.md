@@ -15,7 +15,7 @@ Is all you should need.
 Running
 =======
 
-You will need to write a config file before using the server. A sample config file is included in server/sample_config.ini . Save the new config file to server/config.ini . Then:
+You will need to write a config file before using the server. A sample config file is included in sample_config.ini . Save the new config file to config.ini . Then:
 
 
     python server/tornado_server.py
