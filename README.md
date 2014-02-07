@@ -15,6 +15,9 @@ Is all you should need.
 Running
 =======
 
+You will need to write a config file before using the server. A sample config file is included in server/sample_config.ini . Save the new config file to server/config.ini . Then:
+
+
     python server/tornado_server.py
 
 Will start a server on port 9001. Then head to localhost:9001 in your browser and hopefully it will work!
