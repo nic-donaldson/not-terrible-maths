@@ -1,6 +1,5 @@
 var connection;
-var messagecontainer;
-var maths_prefix = "m:";
+
 
 if (document.location.hostname != "") {
     connection = new WebSocket('ws://' + document.location.hostname + ':9001/connect', []);
@@ -10,55 +9,30 @@ if (document.location.hostname != "") {
 
 connection.onopen = function () {
     console.log("Connected to server");
-    addMsg('Connected to server');
 };
 
 connection.onerror = function(error) {
     console.log('WebSocket Error ' + error);
-    addMsg('WebSocket Error ' + error);
 };
+
+function getName() {
+    return window.prompt("Please enter a username", "");
+}
 
 connection.onmessage = function (e) {
     console.log('Server: ' + e.data);
-    if (e.data.indexOf(maths_prefix) === 0) {
-        addMsg("Them: " + e.data.substring(6,e.data.length));
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub,$("#messagebox div:last")[0]]);
-    } else {
-        addMsg("Them: " + e.data);
-    }
-}
+    
+    var msg = JSON.parse(e.data);
 
-
-$(document).ready(function() {
-
-    $("#inputfield").keypress(function(event) {
-        if (event.which == 13 && !event.shiftKey) {
-            event.preventDefault();
-
-            console.log("Sending message");
-            msg = $("#inputfield").val();
-            $("#inputfield").val('');
-            connection.send(msg);
-            addMsg("You: " + msg);
-
-            if (msg.indexOf(maths_prefix) === 0) {
-                MathJax.Hub.Queue(["Typeset",MathJax.Hub,$("#messagebox div:last")[0]]);
+    if (msg["type"] == "request") {
+        if (msg["request"] == "name") {
+            var name = getName();
+            var response = {
+                "type":"response",
+                "request":"name",
+                "name":name
             }
+            connection.send(JSON.stringify(response));
         }
-    });
-
-    messagecontainer = document.getElementById("messagecontainer");
-
-});
-
-// Delicious!
-function addMsg(message) {
-    // If message container already at bottom or not overflowing, set to bottom
-    //-- at bottom or not overflowing => scrollheight - scrolltop == height
-    if(messagecontainer.scrollHeight - messagecontainer.scrollTop == $(messagecontainer).height()) {
-        $("#messagebox").append('<div class="message">' + message + '</div>');
-        messagecontainer.scrollTop = messagecontainer.scrollHeight - $(messagecontainer).height();
-    } else {
-        $("#messagebox").append('<div class="message">' + message + '</div>');
     }
 }
