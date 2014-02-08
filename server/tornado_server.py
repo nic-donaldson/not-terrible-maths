@@ -85,7 +85,7 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
 
 class RootHandler(tornado.web.RequestHandler):
 	def get(self):
-		self.redirect("/static/websockets.html")
+		self.render("templates/index.html")
 
 manager = ChatManager()
 
