@@ -7,7 +7,7 @@ from chat_manager import ChatManager, Room, User
 import configparser
 import json
 
-class EchoWebSocket(tornado.websocket.WebSocketHandler):
+class ChatSocket(tornado.websocket.WebSocketHandler):
 
 	def initialize(self, manager):
 		self.manager = manager
@@ -16,76 +16,60 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
 
 		# See if user has a cookie already
 		if not self.get_secure_cookie("id"):
-			# Ask for a name and save user in manager
-			print("new user connected, asking for name")
-			msg = {
-				"type":"request",
-				"request":"name"
-			}
-			self.write_message(json.dumps(msg))
-			manager.add_waiting_user(self)
+			self.write_message("ERROR: No cookie assigned yet")
+			self.close()
+		elif manager.user_exists(int(self.get_secure_cookie("id"))):
+			# Assign socket to user
+			# Disconnect them first just in case
+			sock =  manager.disconnect_user(int(self.get_secure_cookie("id")))
+			if sock != None:
+				sock.close()
+
+			print("User %s connected" % (self.get_secure_cookie("id")))
+			manager.connect_user(int(self.get_secure_cookie("id")), self)
+			self.write_message("ERROR: chat not implemented yet")
+			self.close()
+		else:
+			self.write_message("ERROR: incorrect cookie, clear cookies")
+			self.close()
 
 	def on_message(self, message):
-		msg = json.loads(message)
-
-		if msg["type"] == "response" and msg["request"] == "name":
-			# We now have the user's name
-			# Remove from waiting list and add to users
-			# Give cookie
-			user_id = manager.transfer_user(self, msg["name"])
-			self.set_secure_cookie("id", bytes(user_id))
-			print("User %s transferred" % (msg["name"]))
+		print("Message received")
+		try:
+			msg = json.loads(message)
+		except ValueError:
+			print("Malformed message")
 
 
-	# def initialize(self, database):
-	# 	self.database = database
+	def on_close(self):
+		print("Some socket closed wow")
+		if self.get_secure_cookie("id"):
+			print("User %s disconnected" % (self.get_secure_cookie("id")))
+			manager.disconnect_user(int(self.get_secure_cookie("id")))
 
-	# def open(self):
-
-	# 	if database['prior'] == None:
-	# 		print("New user connected")
-	# 		database['prior'] = self
-	# 	else:
-	# 		print("New user connected, connecting with previous user")
-	# 		database['pairs'][database['prior']] = self
-	# 		database['pairs'][self] = database['prior']
-	# 		database['prior'].write_message("1:Connected to another!")
-	# 		self.write_message("2:Connected to another!")
-	# 		database['prior'] = None
-
-	# def on_message(self, message):
-	# 	if self in database['pairs']:
-	# 		database['pairs'][self].write_message(message)
-	# 	else:
-	# 		self.write_message("No friend yet, :(")
-
-
-	# def on_close(self):
-
-	# 	if self in database['pairs']:
-	# 		database['pairs'][self].write_message("Your friend has disconnected")
-	# 		# if there is no-one else to talk to
-	# 		if database['prior'] == None:
-	# 			database['prior'] = database['pairs'][self]
-	# 			del database['pairs'][self]
-	# 			del database['pairs'][database['prior']]
-	# 		# if there is someone else to talk to!
-	# 		else:
-	# 			old_friend = database['pairs'][self]
-	# 			del database['pairs'][self]
-	# 			database['pairs'][old_friend] = database['prior']
-	# 			database['pairs'][database['prior']] = old_friend
-	# 			database['prior'] = None
-
-	# 			old_friend.write_message("New friend connected")
-	# 			database['pairs'][old_friend].write_message("Friend connected!")
-	# 	else:
-	# 		if self == database['prior']:
-	# 			database['prior'] = None
+class ChatHandler(tornado.web.RequestHandler):
+	def get(self):
+		if not self.get_secure_cookie("id"):
+			self.redirect("/")
+		else:
+			self.render("templates/chat.html")
 
 class RootHandler(tornado.web.RequestHandler):
 	def get(self):
-		self.render("templates/index.html")
+		if not self.get_secure_cookie("id"):
+			print("new user connected, asking for name")
+			self.render("templates/index.html")
+		else:
+			self.redirect("/chat")
+
+	def post(self):
+		name = self.get_argument("username")
+		user_id = manager.add_user(None, name)
+		self.set_secure_cookie("id", str(user_id))
+		print("User %s given cookie" % (name))
+		self.redirect("/chat")
+		
+
 
 manager = ChatManager()
 
@@ -101,8 +85,9 @@ settings = {
 
 
 application = tornado.web.Application([
-	(r"/connect", EchoWebSocket, dict(manager=manager)),
+	(r"/connect", ChatSocket, dict(manager=manager)),
 	(r"/", RootHandler),
+	(r"/chat", ChatHandler),
 ], **settings)
 
 if __name__ == "__main__":

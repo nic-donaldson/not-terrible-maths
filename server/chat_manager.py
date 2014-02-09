@@ -5,24 +5,27 @@ class ChatManager():
 
 		self.rooms = {}
 		self.users = {}
-		self.waiting_users = {}
+		
 		self.id = 1
 
-	def add_waiting_user(self, socket):
-		self.waiting_users[socket] = None
-
-	def transfer_user(self, socket, name):
-		if socket in self.waiting_users:
-			del self.waiting_users[socket]
-			return self.add_user(socket, name)
-		else:
-			print("user not waiting")
+	def user_exists(self, id):
+		return id in self.users
 
 	def add_user(self, socket, name):
 		self.users[self.id] = User(self.id, name, socket)
 		self.id += 1
 		return (self.id-1)
 
+	def connect_user(self, id, socket):
+		self.users[id].socket = socket
+
+	def disconnect_user(self, id):
+		sock = self.users[id].socket
+		self.users[id].socket = None
+		return sock
+
+	def __str__(self):
+		return repr(self.rooms) + '\n' + repr(self.users)
 
 
 
@@ -37,6 +40,9 @@ class Room():
 			print("User %s added to room %s." % (userObject.name, self.name))
 		else:
 			raise RoomError("User already in room!")
+
+	def __str__(self):
+		return "Room: " + self.name
 
 	class RoomError(Exception):
 		def __init__(self, value):
