@@ -20,7 +20,7 @@ You will need to write a config file before using the server. A sample config fi
 
     python3.3 server/tornado_server.py
 
-Will start a server on port 9001. Then head to localhost:9001 in your browser and hopefully it will work!
+Will start a server on the port specified in config.ini. Then head to localhost:port in your browser and hopefully it will work!
 
 To-do
 =====

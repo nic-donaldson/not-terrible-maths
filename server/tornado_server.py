@@ -8,11 +8,17 @@ import configparser
 import json
 
 class ChatSocket(tornado.websocket.WebSocketHandler):
+	""" Class to handle the websocket chat interface """
 
 	def initialize(self, manager):
+		""" Sets the manager object for the rest of the class
+			to work with.
+		"""
+
 		self.manager = manager
 
 	def open(self):
+		""" Called when a user connects with a websocket """
 
 		# See if user has a cookie already
 		if not self.get_secure_cookie("id"):
@@ -21,14 +27,12 @@ class ChatSocket(tornado.websocket.WebSocketHandler):
 		elif manager.user_exists(int(self.get_secure_cookie("id"))):
 			# Assign socket to user
 			# Disconnect them first just in case
-			sock =  manager.disconnect_user(int(self.get_secure_cookie("id")))
+			sock = manager.disconnect_user(int(self.get_secure_cookie("id")))
 			if sock != None:
 				sock.close()
 
 			print("User %s connected" % (self.get_secure_cookie("id")))
 			manager.connect_user(int(self.get_secure_cookie("id")), self)
-			self.write_message("ERROR: chat not implemented yet")
-			self.close()
 		else:
 			self.write_message("ERROR: incorrect cookie, clear cookies")
 			self.close()
@@ -40,9 +44,7 @@ class ChatSocket(tornado.websocket.WebSocketHandler):
 		except ValueError:
 			print("Malformed message")
 
-
 	def on_close(self):
-		print("Some socket closed wow")
 		if self.get_secure_cookie("id"):
 			print("User %s disconnected" % (self.get_secure_cookie("id")))
 			manager.disconnect_user(int(self.get_secure_cookie("id")))
@@ -91,5 +93,5 @@ application = tornado.web.Application([
 ], **settings)
 
 if __name__ == "__main__":
-	application.listen(9001)
+	application.listen(int(config['DEFAULT']['port']))
 	tornado.ioloop.IOLoop.instance().start()
